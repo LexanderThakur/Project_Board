@@ -6,7 +6,7 @@ import json
 from django.contrib.auth.hashers import make_password,check_password
 from accounts.models import User
 import jwt
-from datetime import datetime, timedelta
+import datetime
 from django.conf import settings
 
 
@@ -27,12 +27,25 @@ def login(request):
     payload={
         'user_id':user.id,
         'user_email':user.user_email,
-        'exp':datetime.utcnow()+ timedelta(minutes=30)
+        'exp':datetime.datetime.utcnow()+ datetime.timedelta(minutes=30),
+        "iat": datetime.datetime.utcnow(),
+
     }
     
 
     encoded_jwt= jwt.encode(payload,settings.JWT_SECRET,algorithm='HS256')
-    return Response({"message":"successfully logged in","jwt":encoded_jwt})
+    response=Response({"message":"successfully logged in"},status=200)
+
+    response.set_cookie(
+        key='jwt',
+        value=encoded_jwt,
+        httponly=True,
+        secure=False,
+        samesite='Lax',
+        path='/'
+
+    )
+    return response
 
 
 
@@ -52,9 +65,21 @@ def register(request):
     payload={
         'user_id':user.id,
         'user_email':user.user_email,
-        'exp':datetime.utcnow()+ timedelta(minutes=30)
+        'exp':datetime.datetime.utcnow()+ datetime.timedelta(minutes=30),
+        "iat": datetime.datetime.utcnow(),
     }
     
 
     encoded_jwt= jwt.encode(payload,settings.JWT_SECRET,algorithm='HS256')
-    return Response({"message":"successfully registered","jwt":encoded_jwt})
+    response=Response({"message":"successfully registered"},status=200)
+
+    response.set_cookie(
+        key='jwt',  
+        value=encoded_jwt,
+        httponly=True,
+        secure=False,
+        samesite='Lax',
+        path='/ '
+
+    )
+    return response
