@@ -17,6 +17,7 @@
   <body>
     <input id="csrf" type="hidden" value="{{ csrf_token }}">
     <div class="loginPage">
+
       <form onsubmit="event.preventDefault()">
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label"
@@ -39,8 +40,13 @@
         </div>
 
         <button  class="btn btn-primary" onclick="register()">Register</button>
-        <button class="btn btn-primary">Login</button>
+        <button class="btn btn-primary " onclick="login()">Login</button>
       </form>
+    </div>
+    <div class="home">
+
+      <p>Your user email is:</p>
+      <p class="me"></p>
     </div>
     <script src="static/js/app.js"></script>
   </body>

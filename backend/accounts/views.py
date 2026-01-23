@@ -11,6 +11,20 @@ from django.conf import settings
 
 
 
+
+@api_view(['GET'])
+def me(request):
+    user= request.user
+    if not user:
+        return Response({"error":"user not found "},status=401)
+    
+
+
+    user_email= user.user_email
+    return Response({"user_email":user_email},status=200)
+
+
+
 @api_view(['POST'])
 def login(request):
     data= request.data
