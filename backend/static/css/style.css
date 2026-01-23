@@ -10,3 +10,17 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.home{
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+.projects{
+  height: 30%;
+  width: 100%;
+}
+.tasks{
+  height:70%;
+  width: 100%
+}
