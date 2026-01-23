@@ -6,6 +6,7 @@ from django.db import models
 class User(models.Model):
     user_email=models.EmailField(unique=True)
     user_password=models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
 
 
 

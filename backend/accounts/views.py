@@ -12,6 +12,7 @@ from django.conf import settings
 
 
 
+
 @api_view(['GET'])
 def me(request):
     user= request.user
@@ -73,7 +74,7 @@ def register(request):
     
     user= User.objects.filter(user_email=user_email).first()
     if  user:
-        return Response({'error':'user already exists'})
+        return Response({'error':'user already exists'},status=409)
     user= User(user_email=user_email,user_password=make_password(user_password))
     user.save()
     payload={
@@ -93,7 +94,7 @@ def register(request):
         httponly=True,
         secure=False,
         samesite='Lax',
-        path='/ '
+        path='/'
 
     )
     return response
