@@ -91,6 +91,7 @@ async function login(){
         if(!response.ok){
             alert(data.error||"error")
             return
+            
         }
         render_home()
 
