@@ -31,3 +31,4 @@ class TaskCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Tasks
         fields=["title","project"]
+        
