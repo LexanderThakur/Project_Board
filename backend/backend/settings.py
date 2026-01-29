@@ -47,14 +47,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "middlewares.jwtMiddleware.JWTMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+   # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "middlewares.jwtMiddleware.JWTMiddleware",
+    
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -132,3 +133,8 @@ STATICFILES_DIRS=[
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": [],
+}

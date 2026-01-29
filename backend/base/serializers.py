@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from . import Projects, Tasks
+from .models import Projects, Tasks
 
 
 
@@ -30,5 +30,5 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 class TaskCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Tasks
-        fields=["title","project"]
+        fields=["title"]
         

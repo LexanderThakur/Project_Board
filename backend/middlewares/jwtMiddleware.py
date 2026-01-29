@@ -10,16 +10,21 @@ class JWTMiddleware:
         self.public_paths=['/','/auth/login/','/auth/register/','/favicon.ico']
         
     def __call__(self,request):
+        print("JWT MIDDLEWARE HIT:", request.path)
+
+
         if request.method=='OPTIONS':
             return self.get_response(request)
-
+        
+        
         if request.path.startswith("/static/") or request.path.startswith('/.well-known/'):
             return self.get_response(request)
         
         if request.path in self.public_paths :
             return self.get_response(request)
         
-        
+        print("COOKIES:", request.COOKIES)
+
         jwt_token= request.COOKIES.get("jwt")
 
 

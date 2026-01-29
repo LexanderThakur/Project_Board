@@ -1,4 +1,4 @@
-const csrf_token= document.querySelector("#csrf").value
+const csrf_token= document.querySelector("#csrf").value || null
 
 
 

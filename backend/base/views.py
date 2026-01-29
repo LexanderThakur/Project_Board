@@ -4,7 +4,7 @@ from rest_framework.response import Response
 # Create your views here.
 from .models import Projects,Tasks
 from rest_framework.permissions import IsAuthenticated
-
+from django.http import JsonResponse
 from .serializers import (
     ProjectCreateSerializer,
     TaskCreateSerializer,
@@ -12,9 +12,12 @@ from .serializers import (
     TaskSerializer
 )
 
+def auth_error(request):
+    if not request.user:
+        return JsonResponse({"error":"user not logged in"},status=401)
+
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
 def create_project(request):
     
     data=request.data
@@ -29,16 +32,26 @@ def create_project(request):
     
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def get_project(request):
     
     
-    project= Projects.objects.filter(owner=request.user)
+    project= Projects.objects.filter(owner=request.user).first()
 
     serializer= ProjectSerializer(project,many=True)
 
     return Response({"message":serializer.data},status=200)
     
 
+@api_view(["POST"])
+def create_task(request,project_id):
+    
+    project= Projects.objects.filter(id=project_id)
+
 
     
+   
+
+    serializer= TaskCreateSerializer(data=request.data)   
+    serializer.is_valid(raise_exception=True)
+    serializer.save(project=project)
+    return Response({"message":"task created successfully"},status=201) 
