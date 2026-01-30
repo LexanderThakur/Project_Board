@@ -1,57 +1,73 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view,permission_classes
-from rest_framework.response import Response
+
+
 # Create your views here.
 from .models import Projects,Tasks
-from rest_framework.permissions import IsAuthenticated
+
 from django.http import JsonResponse
-from .serializers import (
-    ProjectCreateSerializer,
-    TaskCreateSerializer,
-    ProjectSerializer,
-    TaskSerializer
-)
-
-def auth_error(request):
-    if not request.user:
-        return JsonResponse({"error":"user not logged in"},status=401)
 
 
-@api_view(["POST"])
+
 def create_project(request):
     
-    data=request.data
+    if request.method !="POST":
+        return JsonResponse({"error":"method not allowed"},status=405)
 
-    serializer= ProjectCreateSerializer(data=data)
-    
-    serializer.is_valid(raise_exception=True)
-    serializer.save(owner=request.user)
+    try:
+        data= json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "invalid json"}, status=400)
+    if Projects.objects.filter(name=data.get('name')).first():
+        return JsonResponse({"error":"project name already exists"},status=401)
+
+    new_project= Projects(owner=request.owner,name=data.name,description=data.description)
+    new_project.save()
     return Response({"message":"created succesfully","data":serializer.data},status=201)
 
     
     
 
-@api_view(["GET"])
+
 def get_project(request):
+    if request.method !="GET":
+        return JsonResponse({"error":"method not allowed"},status=405)
     
+    projects= Projects.objects.filter(owner=request.user)
+
+    data= []
+    for project in projects:
+        data.append({
+            "id":project.id,
+            "name": project.name,
+            "description" : project.description,
+            "created_at":project.created_at
+
+
+        })
+
+
+
     
-    project= Projects.objects.filter(owner=request.user).first()
 
-    serializer= ProjectSerializer(project,many=True)
-
-    return Response({"message":serializer.data},status=200)
+    return Response({"message":data},status=200)
     
 
-@api_view(["POST"])
+
 def create_task(request,project_id):
+    if request.method !="POST":
+        return JsonResponse({"error":"method not allowed"},status=405)
     
-    project= Projects.objects.filter(id=project_id)
-
+    try:
+        data= json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "invalid json"}, status=400)
+    project= Projects.objects.filter(id=project_id).first()
+    
+    new_task = Tasks(project=project,title=data.get('title'))
+    new_task.save()
 
     
    
 
-    serializer= TaskCreateSerializer(data=request.data)   
-    serializer.is_valid(raise_exception=True)
-    serializer.save(project=project)
+    
     return Response({"message":"task created successfully"},status=201) 

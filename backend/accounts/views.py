@@ -1,6 +1,5 @@
 
-from rest_framework.response import Response 
-from rest_framework.decorators import api_view
+
 import json
 
 from django.contrib.auth.hashers import make_password,check_password
@@ -9,35 +8,41 @@ import jwt
 import datetime
 from django.conf import settings
 
+from django.http import JsonResponse
 
 
 
 
-@api_view(['GET'])
+
 def me(request):
+    if request.method !="GET":
+        return JsonResponse({"error":"method not allowed"},status=405)
     user= request.user
     if not user:
-        return Response({"error":"user not found "},status=401)
+        return JsonResponse({"error":"user not found "},status=401)
     
 
 
     user_email= user.user_email
-    return Response({"user_email":user_email},status=200)
+    return JsonResponse({"user_email":user_email},status=200)
 
 
 
-@api_view(['POST'])
+
 def login(request):
-    data= request.data
+    try:
+        data= json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "invalid json"}, status=400)
 
     user_email=data.get('user_email',None)
     user_password= data.get('user_password',None)
     
     user= User.objects.filter(user_email=user_email).first()
     if not user:
-        return Response({'error':'user does not exist'})
+        return JsonResponse({'error':'user does not exist'},status=404)
     if not check_password(user_password,user.user_password):
-        return Response({'error':'invalid password'})
+        return JsonResponse({'error':'invalid password'})
     
     payload={
         'user_id':user.id,
@@ -49,7 +54,7 @@ def login(request):
     
 
     encoded_jwt= jwt.encode(payload,settings.JWT_SECRET,algorithm='HS256')
-    response=Response({"message":"successfully logged in"},status=200)
+    response=JsonResponse({"message":"successfully logged in"},status=200)
 
     response.set_cookie(
         key='jwt',
@@ -65,16 +70,19 @@ def login(request):
 
 
 
-@api_view(['POST'])
+
 def register(request):
-    data= request.data
+    try:
+        data= json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "invalid json"}, status=400)
 
     user_email=data.get('user_email',None)
     user_password= data.get('user_password',None)
     
     user= User.objects.filter(user_email=user_email).first()
     if  user:
-        return Response({'error':'user already exists'},status=409)
+        return JsonResponse({'error':'user already exists'},status=409)
     user= User(user_email=user_email,user_password=make_password(user_password))
     user.save()
     payload={
@@ -86,7 +94,7 @@ def register(request):
     
 
     encoded_jwt= jwt.encode(payload,settings.JWT_SECRET,algorithm='HS256')
-    response=Response({"message":"successfully registered"},status=200)
+    response=JsonResponse({"message":"successfully registered"},status=200)
 
     response.set_cookie(
         key='jwt',  
