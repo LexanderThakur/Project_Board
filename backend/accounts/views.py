@@ -72,8 +72,10 @@ def login(request):
 
 
 def register(request):
+
+    
     try:
-        data= json.loads(request.body)
+     data= json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({"error": "invalid json"}, status=400)
 

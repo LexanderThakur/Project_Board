@@ -5,7 +5,7 @@ from django.shortcuts import render
 from .models import Projects,Tasks
 
 from django.http import JsonResponse
-
+import json
 
 
 def create_project(request):
@@ -20,9 +20,9 @@ def create_project(request):
     if Projects.objects.filter(name=data.get('name')).first():
         return JsonResponse({"error":"project name already exists"},status=401)
 
-    new_project= Projects(owner=request.owner,name=data.name,description=data.description)
+    new_project= Projects(owner=request.user,name=data.get('name'),description=data.get('description'))
     new_project.save()
-    return Response({"message":"created succesfully","data":serializer.data},status=201)
+    return JsonResponse({"message":"created succesfully"},status=201)
 
     
     
@@ -49,7 +49,7 @@ def get_project(request):
 
     
 
-    return Response({"message":data},status=200)
+    return JsonResponse({"message":data},status=200)
     
 
 
@@ -70,4 +70,4 @@ def create_task(request,project_id):
    
 
     
-    return Response({"message":"task created successfully"},status=201) 
+    return JsonResponse({"message":"task created successfully"},status=201) 
