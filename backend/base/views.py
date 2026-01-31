@@ -71,3 +71,37 @@ def create_task(request,project_id):
 
     
     return JsonResponse({"message":"task created successfully"},status=201) 
+
+
+
+
+def get_tasks(request,project_id):
+    if request.method!="GET":
+        return JsonResponse({"error:":"method not allowed"},status=405)
+
+
+    project= Projects.objects.filter(id=project_id).first()
+
+    if not project:
+        return JsonResponse({"error":"project does not exist in database"},status=400)
+
+    
+    tasks= Tasks.objects.filter(project=project)
+
+
+    data= []
+
+    for task in tasks:
+
+        data.append({
+            "id":task.id,
+            "title":task.title,
+            "compeleted":task.compeleted,
+            "created_at":task.created_at
+
+
+        })
+
+    return JsonResponse({"message":data},status=200)
+
+
