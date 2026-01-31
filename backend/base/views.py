@@ -105,3 +105,27 @@ def get_tasks(request,project_id):
     return JsonResponse({"message":data},status=200)
 
 
+
+
+def mark_tasks(request,task_id):
+    if request.method != "PATCH":
+        return JsonResponse({"error":"method not allowed"},status=405)
+    
+    task = Tasks.objects.filter(id=task_id).first()
+    if not task:
+        return JsonResponse({"error":"task not in database"},status=400)
+    
+    task.compeleted= not task.compeleted
+    task.save()
+
+    return JsonResponse({"message":"patched successfully"},status=200)
+
+def delete_projects(request,project_id):
+    if request.method != "DELETE":
+        return JsonResponse({"error":"method not allowed"},status=405)
+    
+    project=Projects.objects.filter(id=project_id).first()
+
+    project.delete()
+
+    return JsonResponse({"message":"successfully deleted"},status=200)
