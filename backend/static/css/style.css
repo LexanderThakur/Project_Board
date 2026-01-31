@@ -11,18 +11,25 @@ body {
   justify-content: center;
 }
 
-.home{
-  flex-direction: column;
+.home {
   height: 100%;
   width: 100%;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
-.projects{
-  height: 30%;
+
+.projects {
   width: 100%;
+  display: flex;
+  gap: 1rem;
 }
-.tasks{
-  height:70%;
-  width: 100%
+
+.projectCard {
+  width: 16rem;
+  height: 12rem;
+}
+
+.tasks {
+  width: 100%;
 }
