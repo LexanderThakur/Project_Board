@@ -23,6 +23,9 @@ body {
   width: 100%;
   display: flex;
   gap: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .projectCard {
@@ -32,4 +35,16 @@ body {
 
 .tasks {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.taskCard {
+  width: 40%;
+
+  border: solid 1px black;
+  border-radius: 12px;
+  text-align: center;
+  margin: 2rem;
 }
