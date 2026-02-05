@@ -47,15 +47,29 @@
 
     <!-- HOME PAGE -->
     <div class="home">
-      <p>Your user email is:</p>
-      <p class="me"></p>
+      <p style="display: none">Your user email is:</p>
+      <p class="me" style="display: none"></p>
 
       <!-- PROJECTS -->
-      <div class="projects">
-        <div class="createProject">
-          <button class="btn btn-outline-primary">+ Create Project</button>
-        </div>
+      <div class="createProject">
+        <button class="btn btn-outline-primary" onclick="create_project()">
+          + Create Project
+        </button>
+        <input
+          type="text"
+          class="form-control projectName"
+          placeholder="Project Name"
+          aria-describedby="addon-wrapping"
+        />
+        <input
+          type="text"
+          class="form-control projectDescription"
+          placeholder="Project Description"
+          aria-describedby="addon-wrapping"
+        />
+      </div>
 
+      <div class="projects">
         <div class="card projectCard">
           <div class="card-body">
             <h5 class="card-title">Project 1</h5>

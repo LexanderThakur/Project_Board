@@ -1,5 +1,70 @@
 const csrf_token = document.querySelector("#csrf").value || null;
 
+async function render_projects() {
+  try {
+    const response = await fetch("/projects/get_project/");
+
+    const data = await response.json();
+    console.log(data);
+    if (!response.ok) {
+      console.log(data.error || "error in getting projects");
+
+      return;
+    }
+    let projects = [];
+    let project_html = `
+    
+    `;
+    console.log(data);
+    data.message.forEach((project, index) => {
+      project_html += `
+      <div class="card projectCard" data-project-id="${project.id}">
+          <div class="card-body">
+            <h5 class="card-title">${project.name}</h5>
+            <p class="card-text">
+              ${project.description}
+            </p>
+            <button class="btn btn-primary btn-sm" onclick="render_tasks()">Manage</button>
+          </div>
+        </div>
+      
+      
+      `;
+    });
+    document.querySelector(".projects").innerHTML = project_html;
+  } catch (err) {
+    console.log("error in render_projects()" + err);
+  }
+}
+
+async function create_project() {
+  const name = document.querySelector(".projectName").value;
+  const description = document.querySelector(".projectDescription").value;
+
+  try {
+    const response = await fetch("/projects/create/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrf_token,
+      },
+      body: JSON.stringify({
+        name: name,
+        description: description,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      alert(data.error || "error in response");
+      return;
+    }
+
+    render_projects();
+  } catch (err) {
+    alert(err || "Network Error");
+  }
+}
+
 async function render_home() {
   try {
     const response = await fetch("/auth/me/", {
@@ -39,7 +104,7 @@ async function register() {
       alert(data.error || "error");
       return;
     }
-
+    render_projects();
     render_home();
   } catch (err) {
     alert(err || "network err");
@@ -70,6 +135,7 @@ async function login() {
       alert(data.error || "error");
       return;
     }
+    render_projects();
     render_home();
   } catch (err) {
     alert(err || "network err");

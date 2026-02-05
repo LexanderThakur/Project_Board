@@ -84,3 +84,8 @@ body {
   color: #6c757d;
   background: #e9ecef;
 }
+.createProject {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
