@@ -45,7 +45,7 @@ async function render_tasks(project_id) {
       </div>`;
     data.message.forEach((task, index) => {
       task_html += `
-      <div class="taskCard" onclick="mark_task(${task.id})">${task.title}</div>
+      <div class="taskCard ${task.compeleted ? "done" : ""}" onclick="mark_task(${task.id},${project_id})">${task.title}</div>
       
       `;
     });
@@ -197,10 +197,17 @@ async function login() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".taskCard").forEach((task) => {
-    task.addEventListener("click", () => {
-      task.classList.toggle("done");
+async function mark_task(task_id, project_id) {
+  console.log("mark task fired" + task_id + project_id);
+  try {
+    const response = await fetch(`/projects/mark_tasks/${task_id}/`, {
+      method: "PATCH",
     });
-  });
-});
+    if (!response.ok) {
+      console.log("error in mark task response");
+    }
+    render_tasks(project_id);
+  } catch (err) {
+    console.log("error in mark task" + err);
+  }
+}
