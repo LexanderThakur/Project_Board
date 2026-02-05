@@ -1,5 +1,60 @@
 const csrf_token = document.querySelector("#csrf").value || null;
 
+async function create_task(project_id) {
+  const title = document.querySelector(".taskName").value;
+  try {
+    const response = await fetch(`/projects/create_task/${project_id}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+      }),
+    });
+    if (!response.ok) {
+      console.log("err in response of create_task");
+      return;
+    }
+    render_tasks(project_id);
+  } catch (error) {
+    console.log("error in create_task()" + error);
+  }
+}
+
+async function render_tasks(project_id) {
+  try {
+    const response = await fetch(`/projects/get_tasks/${project_id}/`);
+
+    if (!response.ok) {
+      console.log("response not okay in render task");
+    }
+    const data = await response.json();
+    let task_html = `
+    <div class="createTask">
+        <button class="btn btn-outline-primary" onclick="create_task(${project_id})">
+          + Create Task
+        </button>
+        <input
+          type="text"
+          class="form-control taskName"
+          placeholder="Task Name"
+          aria-describedby="addon-wrapping"
+        />
+        
+      </div>`;
+    data.message.forEach((task, index) => {
+      task_html += `
+      <div class="taskCard" onclick="mark_task(${task.id})">${task.title}</div>
+      
+      `;
+    });
+    document.querySelector(".tasks").innerHTML = task_html;
+  } catch (err) {
+    console.log("error in render_tasks()" + err);
+  }
+}
+
 async function render_projects() {
   try {
     const response = await fetch("/projects/get_project/");
@@ -11,7 +66,7 @@ async function render_projects() {
 
       return;
     }
-    let projects = [];
+
     let project_html = `
     
     `;
@@ -24,7 +79,7 @@ async function render_projects() {
             <p class="card-text">
               ${project.description}
             </p>
-            <button class="btn btn-primary btn-sm" onclick="render_tasks()">Manage</button>
+            <button class="btn btn-primary btn-sm" onclick="render_tasks(${project.id})">Manage</button>
           </div>
         </div>
       
