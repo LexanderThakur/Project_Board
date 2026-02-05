@@ -80,6 +80,7 @@ async function render_projects() {
               ${project.description}
             </p>
             <button class="btn btn-primary btn-sm" onclick="render_tasks(${project.id})">Manage</button>
+            <button type="button" class="btn btn-outline-danger" onclick="delete_project(${project.id})">Delete</button>
           </div>
         </div>
       
@@ -209,5 +210,20 @@ async function mark_task(task_id, project_id) {
     render_tasks(project_id);
   } catch (err) {
     console.log("error in mark task" + err);
+  }
+}
+
+async function delete_project(project_id) {
+  try {
+    const response = await fetch(`/projects/delete_projects/${project_id}/`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      console.log("response error in delete project()");
+    }
+    render_projects();
+    document.querySelector(".tasks").innerHTML = "";
+  } catch (error) {
+    console.log(error);
   }
 }
